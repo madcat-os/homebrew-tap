@@ -3,7 +3,6 @@ class MarauderMesh < Formula
   homepage "https://github.com/marauder-os/marauder-os"
   license "PolyForm-Small-Business-1.0.0"
   version "0.3.0"
-  # No source — this is a service-only formula
   url "https://github.com/marauder-os/homebrew-tap/archive/refs/heads/main.tar.gz"
 
   depends_on "marauder-os/tap/marauder"
@@ -18,7 +17,7 @@ class MarauderMesh < Formula
   end
 
   service do
-    run [opt_prefix/"../marauder/bin/marauder", "mesh", "daemon"]
+    run [HOMEBREW_PREFIX/"bin/marauder", "mesh", "daemon"]
     keep_alive true
     log_path var/"log/marauder-mesh.log"
     error_log_path var/"log/marauder-mesh.log"

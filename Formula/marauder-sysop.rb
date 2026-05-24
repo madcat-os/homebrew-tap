@@ -2,18 +2,20 @@ class MarauderSysop < Formula
   desc "MARAUDER system metrics daemon"
   homepage "https://github.com/marauder-os/marauder-os"
   license "PolyForm-Small-Business-1.0.0"
+  head "https://github.com/marauder-os/homebrew-tap.git", branch: "main"
   version "0.3.0"
-  url "https://github.com/marauder-os/homebrew-tap/archive/refs/heads/main.tar.gz"
-  sha256 :no_check
 
   def install
     (etc/"marauder").mkpath
-    (etc/"marauder/sysop.env").write <<~EOS
-      # Environment for marauder sysop daemon
-      # Edit this file then: brew services restart marauder-sysop
-      RUST_LOG=marauder_os=info,marauder_os::sysop=debug
-      INTERVAL_SECS=10
-    EOS
+    unless (etc/"marauder/sysop.env").exist?
+      (etc/"marauder/sysop.env").write <<~EOS
+        # Environment for marauder sysop daemon
+        # Edit this file then: brew services restart marauder-sysop
+        RUST_LOG=marauder_os=info,marauder_os::sysop=debug
+        INTERVAL_SECS=10
+      EOS
+    end
+    (share/"marauder"/"sysop.service").write "marauder sysop daemon v#{version}"
   end
 
   service do

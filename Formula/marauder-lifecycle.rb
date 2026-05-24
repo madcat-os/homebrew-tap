@@ -2,9 +2,8 @@ class MarauderLifecycle < Formula
   desc "MARAUDER lifecycle daemon (Python/MQTT)"
   homepage "https://github.com/marauder-os/marauder-agent"
   license "PolyForm-Small-Business-1.0.0"
+  head "https://github.com/marauder-os/homebrew-tap.git", branch: "main"
   version "0.1.0"
-  url "https://github.com/marauder-os/homebrew-tap/archive/refs/heads/main.tar.gz"
-  sha256 :no_check
 
   depends_on "uv"
 

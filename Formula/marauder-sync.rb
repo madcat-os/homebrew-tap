@@ -17,7 +17,7 @@ class MarauderSync < Formula
   end
 
   service do
-    run [opt_prefix/"../marauder/bin/marauder", "sync", "daemon"]
+    run [HOMEBREW_PREFIX/"bin/marauder", "sync", "daemon"]
     keep_alive true
     log_path var/"log/marauder-sync.log"
     error_log_path var/"log/marauder-sync.log"

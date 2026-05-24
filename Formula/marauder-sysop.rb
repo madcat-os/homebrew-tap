@@ -4,8 +4,7 @@ class MarauderSysop < Formula
   license "PolyForm-Small-Business-1.0.0"
   version "0.3.0"
   url "https://github.com/marauder-os/homebrew-tap/archive/refs/heads/main.tar.gz"
-
-  depends_on "marauder-os/tap/marauder"
+  sha256 :no_check
 
   def install
     (etc/"marauder").mkpath

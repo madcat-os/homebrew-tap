@@ -2,7 +2,7 @@ class Marauder < Formula
   desc "MARAUDER platform — persona, memory, TTS, MCP server, mesh"
   homepage "https://github.com/marauder-os/marauder-os"
   license "PolyForm-Small-Business-1.0.0"
-  head "git@github.com:marauder-os/marauder-os.git", branch: "master"
+  head "https://github.com/marauder-os/marauder-os.git", branch: "master"
   version "0.3.0"
 
   depends_on "rust" => :build
@@ -10,8 +10,16 @@ class Marauder < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
-    # Also install the status binary
-    system "cargo", "install", *std_cargo_args(path: "."), "--bin", "marauder-status"
+  end
+
+  def caveats
+    <<~EOS
+      The marauder binary requires access to private git dependencies.
+      If `brew install --HEAD` fails, build manually:
+        cd ~/Projects/marauder-os && cargo install --path . --root #{HOMEBREW_PREFIX}
+      Or symlink an existing build:
+        ln -sf ~/.local/bin/marauder #{HOMEBREW_PREFIX}/bin/marauder
+    EOS
   end
 
   test do

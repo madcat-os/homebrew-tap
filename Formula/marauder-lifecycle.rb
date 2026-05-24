@@ -4,6 +4,7 @@ class MarauderLifecycle < Formula
   license "PolyForm-Small-Business-1.0.0"
   version "0.1.0"
   url "https://github.com/marauder-os/homebrew-tap/archive/refs/heads/main.tar.gz"
+  sha256 :no_check
 
   depends_on "uv"
 

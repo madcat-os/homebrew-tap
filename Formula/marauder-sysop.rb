@@ -18,7 +18,7 @@ class MarauderSysop < Formula
   end
 
   service do
-    run [opt_prefix/"../marauder/bin/marauder", "sysop", "daemon", "--interval-secs", "10"]
+    run [HOMEBREW_PREFIX/"bin/marauder", "sysop", "daemon", "--interval-secs", "10"]
     keep_alive true
     log_path var/"log/marauder-sysop.log"
     error_log_path var/"log/marauder-sysop.log"

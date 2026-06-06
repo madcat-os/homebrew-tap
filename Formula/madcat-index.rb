@@ -2,27 +2,21 @@ class MadcatIndex < Formula
   desc "CLI for indexing code and docs into EEMS (Postgres+pgvector)"
   homepage "https://github.com/madcat-os/madcat-memory"
   license "MIT"
-  head "git@github.com:madcat-os/madcat-memory.git", branch: "main"
   version "0.1.0"
 
-  depends_on "rust" => :build
-  depends_on "pkg-config" => :build
+  CDN = "https://pub-74d54066bfe6435e908e11e9f3d14482.r2.dev/latest".freeze
+
+  if OS.mac? && Hardware::CPU.arm?
+    url "#{CDN}/madcat-index-darwin-arm64"
+  elsif OS.linux? && Hardware::CPU.arm?
+    url "#{CDN}/madcat-index-linux-arm64"
+  else
+    url "#{CDN}/madcat-index-linux-x64"
+  end
 
   def install
-    # Platform-aware feature flags
-    features = "fastembed,postgres"
-    if OS.mac? && Hardware::CPU.arm?
-      features += ",gpu-metal,gpu-coreml"
-    elsif OS.linux? && Hardware::CPU.intel?
-      features += ",gpu-cuda"
-    end
-
-    system "cargo", "build", "--release",
-           "-p", "madcat-index",
-           "--no-default-features",
-           "--features", features
-
-    bin.install "target/release/madcat-index"
+    bin.install Dir["madcat-index-*"].first => "madcat-index"
+    chmod 0755, bin/"madcat-index"
   end
 
   def caveats
@@ -35,7 +29,6 @@ class MadcatIndex < Formula
 
       Usage:
         madcat-index code ~/Projects/myrepo/src --project myrepo
-        madcat-index docs ~/Projects/myrepo/docs --project myrepo
         madcat-index clear --type code --repo myrepo
     EOS
   end

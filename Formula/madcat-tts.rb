@@ -2,7 +2,7 @@ class MadcatTts < Formula
   desc "TTS daemon — Chatterbox + Piper in-process, XTTS proxied"
   homepage "https://github.com/madcat-os/madcat-tts"
   license "MIT"
-  head "git@github.com:madcat-os/madcat-tts.git", branch: "main"
+  url "git@github.com:madcat-os/madcat-tts.git", branch: "main", using: :git
   version "0.2.0"
 
   depends_on "uv"

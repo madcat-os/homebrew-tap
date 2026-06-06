@@ -2,7 +2,7 @@ class MadcatPlugin < Formula
   desc "Opencode plugin — EEMS memory, indexing, TTS, signal, and more"
   homepage "https://github.com/madcat-os/madcat-plugin"
   license "MIT"
-  head "git@github.com:madcat-os/madcat-plugin.git", branch: "sin"
+  url "git@github.com:madcat-os/madcat-plugin.git", branch: "sin", using: :git
   version "0.1.0"
 
   CDN = "https://pub-74d54066bfe6435e908e11e9f3d14482.r2.dev/latest".freeze

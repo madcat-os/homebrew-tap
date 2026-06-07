@@ -1,26 +1,41 @@
 class MadcatTts < Formula
-  desc "TTS daemon — Chatterbox + Piper in-process, XTTS proxied"
+  desc "TTS daemon — VoxCPM2 voice clone engine (30 langs, 48kHz)"
   homepage "https://github.com/madcat-os/madcat-tts"
   license "MIT"
-  url "https://files.pythonhosted.org/packages/0c/3e/7348a3754cde3e6e7ae7bfaf439e8706906958d0cb5bfc935ff988421d6e/madcat_tts-0.3.0.tar.gz"
-  sha256 "3a2c407eb0a7a919b0757f0b639f4536ffa9d7059fbc40656b5566d655af76e8"
-  version "0.3.0"
+  url "https://github.com/madcat-os/madcat-tts.git", tag: "v0.4.0", branch: "main"
+  version "0.4.0"
 
   depends_on "uv"
 
   def install
     # Create a venv in the Cellar — no dependency on $HOME
     venv = libexec/"venv"
-    system "uv", "venv", "--python", "3.11", venv.to_s
+    system "uv", "venv", "--python", "3.12", venv.to_s
+
+    # Install deps from pyproject.toml + the server code
     system "uv", "pip", "install",
            "--python", (venv/"bin/python").to_s,
-           "madcat-tts==#{version}"
+           "voxcpm>=2.0.3",
+           "fastapi>=0.124",
+           "uvicorn[standard]>=0.38",
+           "numpy<2",
+           "pydantic-settings>=2.12",
+           "pydub>=0.25",
+           "python-dotenv>=1.2",
+           "soundfile",
+           "setproctitle>=1.3"
 
-    # Wrapper script that runs from the cellar venv
+    # Copy server code into libexec
+    libexec.install "run.py"
+    libexec.install "server"
+    libexec.install "voices"
+
+    # Wrapper script
     (bin/"madcat-tts").write <<~EOS
       #!/bin/bash
       export PYTHONUNBUFFERED=1
-      exec "#{venv}/bin/madcat-tts" "$@"
+      cd "#{libexec}"
+      exec "#{venv}/bin/python" "#{libexec}/run.py" "$@"
     EOS
     chmod 0755, bin/"madcat-tts"
 
@@ -32,8 +47,6 @@ class MadcatTts < Formula
         MADCAT_TTS_HOST=0.0.0.0
         MADCAT_TTS_PORT=14099
         MADCAT_TTS_LOG=info
-        MADCAT_TTS_XTTS_URL=http://localhost:8020
-        MADCAT_TTS_NORMALIZER_URL=http://localhost:8002
       EOS
     end
   end
@@ -48,32 +61,24 @@ class MadcatTts < Formula
                           PYTHONUNBUFFERED: "1",
                           MADCAT_TTS_HOST: "0.0.0.0",
                           MADCAT_TTS_PORT: "14099",
-                          MADCAT_TTS_LOG: "info",
-                          MADCAT_TTS_XTTS_URL: "http://localhost:8020",
-                          MADCAT_TTS_NORMALIZER_URL: "http://localhost:8002"
+                          MADCAT_TTS_LOG: "info"
   end
 
   def caveats
     <<~EOS
-      Installed via `uv pip install` into a Cellar-local venv.
+      VoxCPM2 engine (Apache 2.0 model, 30 languages, 48kHz output).
+
+      First run downloads ~8GB model from HuggingFace (cached after).
+      Requires NVIDIA GPU with ~8GB free VRAM.
 
       Start the service:
         brew services start madcat-tts
 
-      Upgrade:
-        brew upgrade madcat-tts
-
-      Edit environment:
-        #{etc}/madcat/tts.env
-
       Logs at: #{var}/log/madcat-tts.log
-
-      Requires GPU for Chatterbox engine. Piper works on CPU.
-      XTTS engine proxied to MADCAT_TTS_XTTS_URL (default: localhost:8020).
     EOS
   end
 
   test do
-    assert_match "madcat", shell_output("#{bin}/madcat-tts --help 2>&1", 0)
+    assert_match "uvicorn", shell_output("#{bin}/madcat-tts --help 2>&1", 0)
   end
 end

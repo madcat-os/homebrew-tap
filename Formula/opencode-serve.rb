@@ -3,8 +3,10 @@ class OpencodeServe < Formula
   homepage "https://opencode.ai"
   license "MIT"
   version "1.0.0"
-  # No source — this is a service-only formula
-  url "git@github.com:madcat-os/homebrew-tap.git", branch: "main"
+  # No source to download — this is a service-only formula that wraps `opencode serve`.
+  # Using the tap repo's HTTPS tarball as a placeholder to satisfy brew's URL requirement.
+  url "https://github.com/madcat-os/homebrew-tap/archive/refs/heads/main.tar.gz"
+  sha256 :no_check
 
   depends_on "opencode"
 

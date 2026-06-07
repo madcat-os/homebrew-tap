@@ -2,6 +2,8 @@ class MadcatTts < Formula
   desc "TTS daemon — Chatterbox + Piper in-process, XTTS proxied"
   homepage "https://github.com/madcat-os/madcat-tts"
   license "MIT"
+  url "https://files.pythonhosted.org/packages/0c/3e/7348a3754cde3e6e7ae7bfaf439e8706906958d0cb5bfc935ff988421d6e/madcat_tts-0.3.0.tar.gz"
+  sha256 "3a2c407eb0a7a919b0757f0b639f4536ffa9d7059fbc40656b5566d655af76e8"
   version "0.3.0"
 
   depends_on "uv"

@@ -2,25 +2,25 @@ class MadcatTts < Formula
   desc "TTS daemon — Chatterbox + Piper in-process, XTTS proxied"
   homepage "https://github.com/madcat-os/madcat-tts"
   license "MIT"
-  url "ssh://git@github.com/madcat-os/madcat-tts.git", branch: "main", using: :git
-  version "0.2.0"
+  version "0.3.0"
 
   depends_on "uv"
 
   def install
-    # Install source to libexec
-    libexec.install Dir["*"]
+    # Install from PyPI into an isolated uv tool environment
+    system "uv", "tool", "install",
+           "--python", "3.11",
+           "--force",
+           "madcat-tts==#{version}"
 
-    # Create venv via uv
-    system "uv", "venv", libexec/".venv", "--python", "3.11"
-    system "uv", "pip", "install", "--python", libexec/".venv"/"bin"/"python",
-           "-e", libexec.to_s
+    # uv tool install puts the binary in ~/.local/bin — symlink into brew prefix
+    uv_bin = Pathname.new(Dir.home)/".local/bin/madcat-tts"
 
-    # Wrapper script
+    # Wrapper script that delegates to the uv-managed entrypoint
     (bin/"madcat-tts").write <<~EOS
       #!/bin/bash
       export PYTHONUNBUFFERED=1
-      exec #{libexec}/.venv/bin/python -m madcat_tts "$@"
+      exec "#{uv_bin}" "$@"
     EOS
     chmod 0755, bin/"madcat-tts"
 
@@ -56,8 +56,13 @@ class MadcatTts < Formula
 
   def caveats
     <<~EOS
+      Installed via `uv tool install madcat-tts==#{version}` from PyPI.
+
       Start the service:
         brew services start madcat-tts
+
+      Upgrade:
+        brew upgrade madcat-tts
 
       Edit environment:
         #{etc}/madcat/tts.env

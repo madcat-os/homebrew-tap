@@ -17,7 +17,7 @@ class OpencodeServe < Formula
       set -a
       [ -f "$HOME/.credentials" ] && . "$HOME/.credentials"
       set +a
-      exec #{HOMEBREW_PREFIX}/bin/opencode serve
+      exec #{HOMEBREW_PREFIX}/bin/opencode serve --cors "https://code.saiden.dev"
     EOS
     chmod 0755, bin/"opencode-serve"
   end

@@ -4,9 +4,9 @@ class OpencodeServe < Formula
   license "MIT"
   version "1.0.0"
   # No source to download — this is a service-only formula that wraps `opencode serve`.
-  # Using the tap repo's HTTPS tarball as a placeholder to satisfy brew's URL requirement.
-  url "https://github.com/madcat-os/homebrew-tap/archive/refs/heads/main.tar.gz"
-  sha256 :no_check
+  # Using the tap repo's tagged tarball as a placeholder to satisfy brew's URL requirement.
+  url "https://github.com/madcat-os/homebrew-tap/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "282ceaec7670448a76a34915116033670903a9752f8c25b5059716ed7b2c6495"
 
   depends_on "opencode"
 

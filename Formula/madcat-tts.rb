@@ -9,20 +9,18 @@ class MadcatTts < Formula
   depends_on "uv"
 
   def install
-    # Install from PyPI into an isolated uv tool environment
-    system "uv", "tool", "install",
-           "--python", "3.11",
-           "--force",
+    # Create a venv in the Cellar — no dependency on $HOME
+    venv = libexec/"venv"
+    system "uv", "venv", "--python", "3.11", venv.to_s
+    system "uv", "pip", "install",
+           "--python", (venv/"bin/python").to_s,
            "madcat-tts==#{version}"
 
-    # uv tool install puts the binary in ~/.local/bin — symlink into brew prefix
-    uv_bin = Pathname.new(Dir.home)/".local/bin/madcat-tts"
-
-    # Wrapper script that delegates to the uv-managed entrypoint
+    # Wrapper script that runs from the cellar venv
     (bin/"madcat-tts").write <<~EOS
       #!/bin/bash
       export PYTHONUNBUFFERED=1
-      exec "#{uv_bin}" "$@"
+      exec "#{venv}/bin/madcat-tts" "$@"
     EOS
     chmod 0755, bin/"madcat-tts"
 
@@ -43,11 +41,10 @@ class MadcatTts < Formula
   service do
     run [opt_bin/"madcat-tts"]
     keep_alive true
-    working_dir Dir.home
+    working_dir HOMEBREW_PREFIX
     log_path var/"log/madcat-tts.log"
     error_log_path var/"log/madcat-tts.log"
-    environment_variables HOME: Dir.home,
-                          PATH: "#{HOMEBREW_PREFIX}/bin:/usr/bin:/bin",
+    environment_variables PATH: "#{HOMEBREW_PREFIX}/bin:/usr/bin:/bin",
                           PYTHONUNBUFFERED: "1",
                           MADCAT_TTS_HOST: "0.0.0.0",
                           MADCAT_TTS_PORT: "14099",
@@ -58,7 +55,7 @@ class MadcatTts < Formula
 
   def caveats
     <<~EOS
-      Installed via `uv tool install madcat-tts==#{version}` from PyPI.
+      Installed via `uv pip install` into a Cellar-local venv.
 
       Start the service:
         brew services start madcat-tts

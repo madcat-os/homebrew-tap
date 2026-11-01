@@ -1,8 +1,8 @@
 class MadcatOs < Formula
   desc "MADCAT MCP server and CLI (stdio and Streamable HTTP)"
   homepage "https://pypi.org/project/madcat-os/"
-  url "https://files.pythonhosted.org/packages/ee/ad/3dc4454a5c5c14567f07ea0fe13e3c1cfa9519f4914a80e1f55465a89ef4/madcat_os-0.1.5.tar.gz"
-  sha256 "47af600057a745f271f6282fbd2c60e0e5b9002efea10eba8572710bd548c98d"
+  url "https://files.pythonhosted.org/packages/9c/9c/042d517e38bd322cba8a297597ec8271eb1d2dd4956729410ff6b6cd98fd/madcat_os-0.1.6.tar.gz"
+  sha256 "387519faf8cc7221bca2e3f6bd89ab6ed306986d2d66fa695a4ea93ff773f472"
   license "BUSL-1.1"
 
   livecheck do

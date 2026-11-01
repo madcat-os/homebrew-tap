@@ -5,8 +5,12 @@ Homebrew tap for MADCAT.
 ## Install
 
 ```bash
+brew tap madcat-os/tap
+brew trust madcat-os/tap
 brew install madcat-os/tap/madcat-os
 ```
+
+Homebrew 7 refuses to load formulae from a tap you have not trusted, so `brew trust` comes first.
 
 ## Formulas
 

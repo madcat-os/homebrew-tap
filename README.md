@@ -1,35 +1,27 @@
 # homebrew-tap
 
-Private Homebrew tap for the MADCAT platform.
+Homebrew tap for MADCAT.
 
 ## Install
 
 ```bash
-brew tap madcat-os/tap git@github.com:madcat-os/homebrew-tap.git
-brew install madcat-os/tap/madcat
+brew install madcat-os/tap/madcat-os
 ```
 
 ## Formulas
 
 | Formula | What it does |
 |---------|-------------|
-| `madcat` | Meta-formula — installs everything below |
-| `madcat-index` | CLI for indexing code/docs into EEMS (Postgres+pgvector) |
-| `madcat-plugin` | Opencode plugin — NAPI bindings + TypeScript tools |
-| `opencode-serve` | Brew service for `opencode serve` |
-| `madcat-tts` | Brew service for the TTS daemon (Chatterbox + Piper) |
+| `madcat-os` | MADCAT MCP server and CLI (`madcat`), the [madcat-os](https://pypi.org/project/madcat-os/) package from PyPI |
 
-## Services
+The formula installs the release's `uv.lock` dependency set into its own virtualenv on Homebrew's
+`python@3.13`.
+
+## Updating
+
+On a new PyPI release, set `url` and `sha256` in `Formula/madcat-os.rb` to the release's sdist
+(`https://pypi.org/pypi/madcat-os/<version>/json`, `packagetype: sdist`), then:
 
 ```bash
-brew services start opencode-serve
-brew services start madcat-tts
-brew services list
+brew install --build-from-source madcat-os/tap/madcat-os && brew test madcat-os/tap/madcat-os
 ```
-
-## Requirements
-
-- SSH access to `github.com/madcat-os/*` repos (private)
-- Rust toolchain (`brew install rust`)
-- `~/.config/madcat/config.toml` with `[database].dsn` pointing at Postgres
-- Python 3.11+ with `uv` for madcat-tts
